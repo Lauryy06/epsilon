@@ -4,6 +4,7 @@
 #include "../apps_container.h"
 #include "../global_preferences.h"
 #include "../exam_mode_configuration.h"
+#include "background_composed_image.h"
 
 extern "C" {
 #include <assert.h>
@@ -17,12 +18,13 @@ extern "C" {
 
 namespace Home {
 
-Controller::ContentView::ContentView(Controller * controller, SelectableTableViewDataSource * selectionDataSource) :
-  m_selectableTableView(controller, controller, selectionDataSource, controller)
+Controller::ContentView::ContentView(Controller * controller, SelectableTableViewDataSource * selectionDataSource, const ComposedImage * backgroundImage) :
+  m_selectableTableView(controller, controller, selectionDataSource, controller),
+  m_backgroundView(backgroundImage)
 {
   m_selectableTableView.setVerticalCellOverlap(0);
   m_selectableTableView.setMargins(0, k_sideMargin, k_bottomMargin, k_sideMargin);
-  m_selectableTableView.setBackgroundColor(Palette::HomeBackground);
+  m_selectableTableView.setBackgroundView(&m_backgroundView);
   static_cast<ScrollView::BarDecorator *>(m_selectableTableView.decorator())->verticalBar()->setMargin(k_indicatorMargin);
 }
 
@@ -31,7 +33,7 @@ SelectableTableView * Controller::ContentView::selectableTableView() {
 }
 
 void Controller::ContentView::drawRect(KDContext * ctx, KDRect rect) const {
-  ctx->fillRect(bounds(), Palette::HomeBackground);
+  m_backgroundView.drawRect(ctx, rect);
 }
 
 void Controller::ContentView::reloadBottomRow(SimpleTableViewDataSource * dataSource, int numberOfIcons, int numberOfColumns) {
@@ -45,6 +47,10 @@ void Controller::ContentView::reloadBottomRow(SimpleTableViewDataSource * dataSo
   }
 }
 
+const BackgroundView * Controller::ContentView::getBackgroundView() const {
+  return &m_backgroundView;
+}
+
 int Controller::ContentView::numberOfSubviews() const {
   return 1;
 }
@@ -56,13 +62,17 @@ View * Controller::ContentView::subviewAtIndex(int index) {
 
 void Controller::ContentView::layoutSubviews(bool force) {
   m_selectableTableView.setFrame(bounds(), force);
+  m_backgroundView.setFrame(KDRect(0, Metric::TitleBarHeight, Ion::Display::Width, Ion::Display::Height-Metric::TitleBarHeight), force);
 }
 
 Controller::Controller(Responder * parentResponder, SelectableTableViewDataSource * selectionDataSource, ::App * app) :
   ViewController(parentResponder),
-  m_view(this, selectionDataSource)
+  m_view(this, selectionDataSource, ImageStore::BackgroundComposedImage)
 {
   m_app = app;
+  for (int i = 0; i < k_maxNumberOfCells; i++) {
+    m_cells[i].setBackgroundView(m_view.getBackgroundView());
+  }
 }
 
 bool Controller::handleEvent(Ion::Events::Event event) {

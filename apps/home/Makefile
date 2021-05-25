@@ -9,6 +9,8 @@ apps_src += $(app_home_src)
 
 i18n_files += $(call i18n_without_universal_for,home/base)
 
+$(eval $(call depends_on_image,apps/home/background_composed_image.cpp,apps/home/background_composed_image.png))
+
 # Apps layout file generation
 
 # The header is refered to as <apps/home/apps_layout.h> so make sure it's

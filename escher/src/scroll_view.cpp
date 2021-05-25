@@ -157,16 +157,30 @@ void ScrollView::setContentOffset(KDPoint offset, bool forceRelayout) {
 }
 
 void ScrollView::InnerView::drawRect(KDContext * ctx, KDRect rect) const {
-  KDCoordinate height = bounds().height();
-  KDCoordinate width = bounds().width();
-  KDCoordinate offsetX = m_scrollView->contentOffset().x() + m_frame.x();
-  KDCoordinate offsetY = m_scrollView->contentOffset().y() + m_frame.y();
-  KDCoordinate contentHeight = m_scrollView->m_contentView->bounds().height();
-  KDCoordinate contentWidth = m_scrollView->m_contentView->bounds().width();
-  ctx->fillRect(KDRect(0, 0, width, m_scrollView->m_topMargin-offsetY), m_scrollView->m_backgroundColor);
-  ctx->fillRect(KDRect(0, contentHeight+m_scrollView->m_topMargin-offsetY, width, height - contentHeight - m_scrollView->m_topMargin + offsetY), m_scrollView->m_backgroundColor);
-  ctx->fillRect(KDRect(0, 0, m_scrollView->m_leftMargin-offsetX, height), m_scrollView->m_backgroundColor);
-  ctx->fillRect(KDRect(contentWidth + m_scrollView->m_leftMargin - offsetX, 0, width - contentWidth - m_scrollView->m_leftMargin + offsetX, height), m_scrollView->m_backgroundColor);
+  if(m_backgroundView == nullptr){
+    KDCoordinate height = bounds().height();
+    KDCoordinate width = bounds().width();
+    KDCoordinate offsetX = m_scrollView->contentOffset().x() + m_frame.x();
+    KDCoordinate offsetY = m_scrollView->contentOffset().y() + m_frame.y();
+    KDCoordinate contentHeight = m_scrollView->m_contentView->bounds().height();
+    KDCoordinate contentWidth = m_scrollView->m_contentView->bounds().width();
+    ctx->fillRect(KDRect(0, 0, width, m_scrollView->m_topMargin-offsetY), m_scrollView->m_backgroundColor);
+    ctx->fillRect(KDRect(0, contentHeight+m_scrollView->m_topMargin-offsetY, width, height - contentHeight - m_scrollView->m_topMargin + offsetY), m_scrollView->m_backgroundColor);
+    ctx->fillRect(KDRect(0, 0, m_scrollView->m_leftMargin-offsetX, height), m_scrollView->m_backgroundColor);
+    ctx->fillRect(KDRect(contentWidth + m_scrollView->m_leftMargin - offsetX, 0, width - contentWidth - m_scrollView->m_leftMargin + offsetX, height), m_scrollView->m_backgroundColor);
+  }  
+  else {
+    KDCoordinate height = bounds().height();
+    KDCoordinate width = bounds().width();
+    KDCoordinate offsetX = m_scrollView->contentOffset().x() + m_frame.x();
+    KDCoordinate offsetY = m_scrollView->contentOffset().y() + m_frame.y();
+    KDCoordinate contentHeight = m_scrollView->m_contentView->bounds().height();
+    KDCoordinate contentWidth = m_scrollView->m_contentView->bounds().width();
+    m_backgroundView->drawRect(ctx, KDRect(0, 0, width, m_scrollView->m_topMargin-offsetY));
+    m_backgroundView->drawRect(ctx, KDRect(0, contentHeight+m_scrollView->m_topMargin-offsetY, width, height - contentHeight - m_scrollView->m_topMargin + offsetY));
+    m_backgroundView->drawRect(ctx, KDRect(0, 0, m_scrollView->m_leftMargin-offsetX, height));
+    m_backgroundView->drawRect(ctx, KDRect(contentWidth + m_scrollView->m_leftMargin - offsetX, 0, width - contentWidth - m_scrollView->m_leftMargin + offsetX, height));
+  }
 }
 
 View * ScrollView::BarDecorator::indicatorAtIndex(int index) {

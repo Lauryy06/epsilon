@@ -31,15 +31,17 @@ private:
   SelectableTableViewDataSource * selectionDataSource() const;
   class ContentView : public View {
   public:
-    ContentView(Controller * controller, SelectableTableViewDataSource * selectionDataSource);
+    ContentView(Controller * controller, SelectableTableViewDataSource * selectionDataSource, const ComposedImage * backgroundImage);
     SelectableTableView * selectableTableView();
     void drawRect(KDContext * ctx, KDRect rect) const override;
     void reloadBottomRow(SimpleTableViewDataSource * dataSource, int numberOfIcons, int numberOfColumns);
+    const BackgroundView * getBackgroundView() const;
   private:
     int numberOfSubviews() const override;
     View * subviewAtIndex(int index) override;
     void layoutSubviews(bool force = false) override;
     SelectableTableView m_selectableTableView;
+    BackgroundView m_backgroundView;
   };
   static constexpr KDCoordinate k_sideMargin = 4;
   static constexpr KDCoordinate k_bottomMargin = 14;

@@ -22,6 +22,7 @@ endif
 escher_src += $(addprefix escher/src/,\
   alternate_empty_view_controller.cpp \
   app.cpp \
+  background_view.cpp \
   bank_view_controller.cpp \
   bordered.cpp \
   buffer_text_view.cpp \
@@ -46,6 +47,7 @@ escher_src += $(addprefix escher/src/,\
   expression_view.cpp \
   highlight_cell.cpp \
   gauge_view.cpp \
+  icon_view.cpp \
   image_view.cpp \
   input_event_handler.cpp \
   invocation.cpp \
@@ -120,7 +122,7 @@ $(eval $(call rule_for, \
   HOSTCC, \
   escher/image/inliner, \
   escher/image/inliner.c $(addprefix ion/src/external/lz4/, lz4.c lz4hc.c), \
-  $$(HOSTCC) -std=c99 `libpng-config --cflags` $$^ `libpng-config --ldflags` -o $$@, \
+  $$(HOSTCC) -std=c99 `libpng-config --cflags` $$^ `libpng-config --ldflags` -lm -o $$@, \
   global \
 ))
 
@@ -147,3 +149,5 @@ $(call object_for,$(1)): SFLAGS += $(foreach d,$(sort $(dir $(call object_for,$(
 escher_src += $(2)
 image_list += $(2)
 endef
+
+

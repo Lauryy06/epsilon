@@ -2,6 +2,7 @@
 #define ESCHER_SCROLL_VIEW_H
 
 #include <escher/view.h>
+#include <escher/background_view.h>
 #include <escher/scroll_view_data_source.h>
 #include <escher/scroll_view_indicator.h>
 
@@ -88,6 +89,9 @@ public:
     m_backgroundColor = c;
     decorator()->setBackgroundColor(m_backgroundColor);
   }
+  void setBackgroundView(BackgroundView * ptr) {
+    m_innerView.setBackgroundView(ptr);
+  }
   KDColor backgroundColor() const { return m_backgroundColor; }
 
   void setContentOffset(KDPoint offset, bool forceRelayout = false);
@@ -119,6 +123,7 @@ private:
   public:
     InnerView(ScrollView * scrollView) : View(), m_scrollView(scrollView) {}
     void drawRect(KDContext * ctx, KDRect rect) const override;
+    void setBackgroundView(BackgroundView * ptr) { m_backgroundView = ptr; }
   private:
     int numberOfSubviews() const override { return 1; }
     View * subviewAtIndex(int index) override {
@@ -126,6 +131,7 @@ private:
       return m_scrollView->m_contentView;
     }
     const ScrollView * m_scrollView;
+    const BackgroundView * m_backgroundView;
   };
 
   KDCoordinate m_topMargin;
