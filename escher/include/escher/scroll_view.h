@@ -121,7 +121,7 @@ private:
 
   class InnerView : public View {
   public:
-    InnerView(ScrollView * scrollView) : View(), m_scrollView(scrollView) {}
+    InnerView(ScrollView * scrollView) : View(), m_scrollView(scrollView), m_backgroundView(nullptr) {}
     void drawRect(KDContext * ctx, KDRect rect) const override;
     void setBackgroundView(BackgroundView * ptr) { m_backgroundView = ptr; }
   private:
